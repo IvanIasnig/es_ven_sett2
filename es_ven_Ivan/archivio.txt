@@ -1,0 +1,7 @@
+Titolo=Guerra e Pace, ISBN=2, anno pubblicazione=1900, numero pagine=200, autore:Marietto, genere:Romanzo storico
+Titolo=Lotr, ISBN=1, anno pubblicazione=2000, numero pagine=1000, autore:Tolkien, genere:Fantasy
+Titolo=Peppa Pig, ISBN=3, anno pubblicazione=2017, numero pagine=900, autore:Kafka, genere:Fantasy
+Titolo=Ciao, ISBN=4321, anno pubblicazione=1345, numero pagine=126, autore:Ivan, genere:Iasnig
+Titolo=Ciao, ISBN=1003, anno pubblicazione=2002, numero pagine=3000, periodicita=SEMESTRALE
+Titolo=Solo, ISBN=1001, anno pubblicazione=2000, numero pagine=100, periodicita=SETTIMANALE
+Titolo=Tu, ISBN=1002, anno pubblicazione=2001, numero pagine=200, periodicita=MENSILE
