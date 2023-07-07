@@ -86,6 +86,7 @@ public class Main {
 	
 	public static void aggiungiLibro(Set<Libri> libri, Scanner scanner) {
 		// Aggiugni libro
+		System.out.println("Inserisci i dettagli del nuovo libro: ");
 		
 		System.out.print("Inserisci ISBN: ");
 		int isbn = scanner.nextInt();

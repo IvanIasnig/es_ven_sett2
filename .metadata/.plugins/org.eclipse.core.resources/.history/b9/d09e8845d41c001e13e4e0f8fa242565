@@ -43,49 +43,134 @@ public class Main {
 			scelta = scanner.nextInt();
 
 			switch (scelta) {
-			case 1:
-				aggiungiLibro(libri, scanner);
-				break;
+				case 1:
+					aggiungiLibro(libri, scanner);
+					break;
 
-			case 2:
-				rimuovi(libri, riviste, scanner);
-				break;
+				case 2:
+					break;
 
-			case 3:
-				cercaPerISBN(libri, riviste, scanner);
-				break;
+				case 3:
+					//ricerca per IBSN
+					System.out.println("Inserisci l'ISBN del libro o rivista da cercare: ");
+					int isbnCercare = scanner.nextInt();
 
-			case 4:
-				cercaPerAnno(libri, riviste, scanner);
-				break;
+					Libri libroCercato = libri.stream()
+							.filter(libro -> libro.getIsbn() == isbnCercare)
+							.findAny()
+							.orElse(null);
 
-			case 5:
-				cercaPerAutore(libri, scanner);
-				break;
+					Riviste rivistaCercata = riviste.stream()
+							.filter(rivista -> rivista.getIsbn() == isbnCercare)
+							.findAny()
+							.orElse(null);
 
-			case 6:
-				salvaDisco(libri, riviste);
-				break;
+					if(libroCercato != null) {
+						System.out.println("Libro trovato: " + libroCercato);
+					} else if(rivistaCercata != null) {
+						System.out.println("Rivista trovata: " + rivistaCercata);
+					} else {
+						System.out.println("Nessun libro o rivista con l'ISBN " + isbnCercare + " trovato.");
+					}
+					break;
+					
+				case 4:
+					// Rierca per anno
+					System.out.println("Inserisci l'anno di pubblicazione del libro o rivista da cercare: ");
+					int annoCercare = scanner.nextInt();
 
-			case 7:
-				caricaDisco();
-				break;
+					Set<Libri> libriCercati = libri.stream()
+							.filter(libro -> libro.getAnnoPubblicazione() == annoCercare)
+							.collect(Collectors.toSet());
 
-			case 0:
-				System.out.println("Uscita dal programma.");
-				break;
+					Set<Riviste> rivisteCercate = riviste.stream()
+							.filter(rivista -> rivista.getAnnoPubblicazione() == annoCercare)
+							.collect(Collectors.toSet());
 
-			default:
-				System.out.println("Scelta non valida!");
-				break;
-		}
-	} while (scelta != 0);
+					if(!libriCercati.isEmpty()) {
+						System.out.println("Libri trovati: " + libriCercati);
+					} 
+					
+					if(!rivisteCercate.isEmpty()) {
+						System.out.println("Riviste trovate: " + rivisteCercate);
+					}
+					
+					if(libriCercati.isEmpty() && rivisteCercate.isEmpty()) {
+						System.out.println("Nessun libro o rivista con l'anno di pubblicazione " + annoCercare + " trovato.");
+					}
+					break;
+					
+				case 5:
+					// Rierca per autore
+					System.out.println("Inserisci l'autore del libro o della rivista da cercare: ");
+					scanner.nextLine();
+					String autCercare = scanner.nextLine();
+
+					Set<Libri> libriAut = libri.stream()
+							.filter(libro -> libro.getAutore().equals(autCercare))
+							.collect(Collectors.toSet());
+
+					if(!libriAut.isEmpty()) {
+						System.out.println("Libri trovati dell'autore: " + autCercare +": " + libriAut);
+					} else if(libriAut.isEmpty()) {
+						System.out.println("Nessun libro dell'autore '" + autCercare + "' trovat0.");
+					}
+					break;
+					
+				case 6:
+				    //Salva su disco
+				    String data = "";
+
+				    for(Libri libro : libri) {
+				        data += libro.toString() + "\n";
+				    }
+
+				    for(Riviste rivista : riviste) {
+				        data += rivista.toString() +"\n";
+				    }
+
+				    try {
+				        FileUtils.writeStringToFile(new File("archivio.txt"), data, StandardCharsets.UTF_8);
+				        System.out.println("Dati salvati");
+				    } catch (IOException e) {
+				        System.out.println("Errore nel salvataggio");
+				        e.printStackTrace();
+				    }
+				    break;
+
+				case 7:
+				    // Caricamento dal disco
+				    
+				    
+				    try {
+				        String lett = FileUtils.readFileToString(new File("archivio.txt"), StandardCharsets.UTF_8);
+				        System.out.println("Archivio caricato: \n" + lett);
+				    } catch (IOException e) {
+				        System.err.println("Errore nel caricamento dell'archivio");
+				        e.printStackTrace();
+				    }
+				    
+				    break;
+
+
+
+		            
+				case 0:
+					
+					break;
+
+				default:
+					System.out.println("Scelta non valida!");
+					break;
+			}
+		} while (scelta != 0);
 
 		scanner.close();
 	}
 	
 	public static void aggiungiLibro(Set<Libri> libri, Scanner scanner) {
 		// Aggiugni libro
+		System.out.println("Inserisci i dettagli del nuovo libro: ");
 		
 		System.out.print("Inserisci ISBN: ");
 		int isbn = scanner.nextInt();
@@ -110,7 +195,6 @@ public class Main {
 		
 		System.out.println("Nuovo libro aggiunto: " + nuovoLibro);
 	}
-	
 	public static void rimuovi(Set<Libri> libri, Set<Riviste> riviste, Scanner scanner) {
 		// Rimozione
 		System.out.println("Inserisci l'ISBN dell' elemento da rimuovere: ");
@@ -126,7 +210,7 @@ public class Main {
 
 		System.out.println("Rimosso il ibro o la rivista con ISBN: " + isbnRimuovere);	
 	}
-	public static void cercaPerISBN(Set<Libri> libri, Set<Riviste> riviste, Scanner scanner) {
+	public static void cercaLibroOrRivistaPerISBN(Set<Libri> libri, Set<Riviste> riviste, Scanner scanner) {
 		//ricerca per IBSN
 		System.out.println("Inserisci l'ISBN del libro o rivista da cercare: ");
 		int isbnCercare = scanner.nextInt();
@@ -150,7 +234,7 @@ public class Main {
 		}
 	}
 
-	public static void cercaPerAnno(Set<Libri> libri, Set<Riviste> riviste, Scanner scanner) {
+	public static void cercaLibroOrRivistaPerAnno(Set<Libri> libri, Set<Riviste> riviste, Scanner scanner) {
 		// Rierca per anno
 		System.out.println("Inserisci l'anno di pubblicazione del libro o rivista da cercare: ");
 		int annoCercare = scanner.nextInt();
@@ -176,7 +260,7 @@ public class Main {
 		}
 	}
 
-	public static void cercaPerAutore(Set<Libri> libri, Scanner scanner) {
+	public static void cercaLibroOrRivistaPerAutore(Set<Libri> libri, Scanner scanner) {
 		// Rierca per autore
 		System.out.println("Inserisci l'autore del libro o della rivista da cercare: ");
 		scanner.nextLine();
@@ -190,39 +274,14 @@ public class Main {
 			System.out.println("Libri trovati dell'autore: " + autCercare +": " + libriAut);
 		} else if(libriAut.isEmpty()) {
 			System.out.println("Nessun libro dell'autore '" + autCercare + "' trovat0.");
-		}
+		}.
 	}
 
-	public static void salvaDisco(Set<Libri> libri, Set<Riviste> riviste) {
-	    //Salva su disco
-	    String data = "";
-
-	    for(Libri libro : libri) {
-	        data += libro.toString() + "\n";
-	    }
-
-	    for(Riviste rivista : riviste) {
-	        data += rivista.toString() +"\n";
-	    }
-
-	    try {
-	        FileUtils.writeStringToFile(new File("archivio.txt"), data, StandardCharsets.UTF_8);
-	        System.out.println("Dati salvati");
-	    } catch (IOException e) {
-	        System.out.println("Errore nel salvataggio");
-	        e.printStackTrace();
-	    }
+	public static void salvaSuDisco(Set<Libri> libri, Set<Riviste> riviste) {
+		// ... il tuo codice qui ...
 	}
 
-	public static void caricaDisco() {
-	    // Caricamento dal disco
-	    
-	    try {
-	        String lett = FileUtils.readFileToString(new File("archivio.txt"), StandardCharsets.UTF_8);
-	        System.out.println("Archivio caricato: \n" + lett);
-	    } catch (IOException e) {
-	        System.err.println("Errore nel caricamento dell'archivio");
-	        e.printStackTrace();
-	    }
+	public static void caricaDaDisco() {
+		// ... il tuo codice qui ...
 	}
 }
